@@ -1,17 +1,11 @@
 import React from 'react'
 
-function Button({addToCartTrue, children}) {
-    const AddToCart ='border-red border-2 bg-white'
-    const quantityClass = 'bg-yellow-400'
-
-
-    const buttonClass = 'bottom-5 px-4 bg-white font-semibold  py-2 rounded-[1.4rem]';
-
-
+function Button({children, onClick}) {
+    
 
   return (
     <div>
-      <button className={`${buttonClass} ${ addToCartTrue ? AddToCart : quantityClass}`}>
+      <button onClick={onClick} className='flex flex-row items-center px-8 font-semibold rounded-[1.8rem] border-rose-300 border-2 bg-white justify-center py-3 gap-[.5rem] bg-white'>
         {children}
         </button>
     </div>
