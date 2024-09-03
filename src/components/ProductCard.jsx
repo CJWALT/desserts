@@ -8,29 +8,79 @@ import { addCart } from '../redux/cartReducer';
 import { useDispatch } from 'react-redux';
 
 function ProductList({ data }) {
-  // State to track "Add to Cart" status for each item
-  const [cartStates, setCartStates] = useState({});
-  const [quantity, setQuantity] = useState(1);
 
   const dispatch = useDispatch();
 
+    const [itemStates, setItemStates] = useState(
+      data.reduce((acc, item, index)=>{ 
+        acc[index] = { inCart: false, quantity: 1};
+        return acc
+      }, {})
+    );
+
+
+
   const handleAddToCart = (itemIndex, item) => {
+
+    const currentQuantity = itemStates[itemIndex].quantity;
+
+
     dispatch(addCart({
-      title: item.title,
+      id:itemIndex,
+      name: item.name,
       price: item.price,
-      quantity
+      quantity:currentQuantity,
     }));
     // Update state for specific item
-    setCartStates(prevState => ({
-      ...prevState,
-      [itemIndex]: true // Mark this item as added
-    }));
+   setItemStates(prevStates => ({ 
+    ...prevStates,
+    [itemIndex]: {...prevStates[itemIndex], inCart:true}
+   }));
   };
+
+
+    const handleIncrease = (itemIndex, items) =>{ 
+      setItemStates(prevStates => ({
+        ...prevStates,
+        [itemIndex]: {...prevStates[itemIndex], quantity:prevStates[itemIndex].quantity + 1}
+      }));
+
+
+      dispatch(addCart({
+        id: itemIndex,
+        name: items.name,
+        price: items.price,
+        quantity: itemStates[itemIndex].quantity + 1,
+      }));
+    }
+
+    const handleDecrease = (itemIndex, items)=>{ 
+
+      const newQuantity = Math.max(itemStates[itemIndex].quantity - 1, 1)
+
+
+      setItemStates(prevStates => ({ 
+        ...prevStates,
+      [itemIndex]: { 
+        ...prevStates[itemIndex], 
+        quantity: newQuantity
+      },
+      }));
+
+      dispatch(addCart({
+        id:itemIndex, 
+        name:items.name, 
+        price:items.price, 
+        quantity:newQuantity
+      }))
+    };
+
+
 
   return (
     <div className=''>
       {data?.map((items, index) => {
-        const isItemInCart = cartStates[index];
+        const {inCart, quantity} = itemStates[index]
 
         return (
           <div key={index} className='my-[1.3rem]'>
@@ -38,23 +88,23 @@ function ProductList({ data }) {
               <img
                 src={baklavaMobile}
                 alt="cookie"
-                className={`rounded-[1rem] ${isItemInCart ? 'border-red border-[.2rem]' : 'border-0'}`}
+                className={`rounded-[1rem] ${inCart ? 'border-red border-[.2rem]' : 'border-0'}`}
               />
               <div className='absolute flex justify-center -bottom-6'>
-                {!isItemInCart ? (
+                {!inCart ? (
                   <Button onClick={() => handleAddToCart(index, items)} addToCartTrue={true}>
                     <img src={addCartIcon} alt='add to cart' /> Add to Cart
                   </Button>
                 ) : (
                   <div className='flex flex-row rounded-[2rem] items-center justify-between w-[12rem] px-[1rem] bg-red py-2'>
-                    <img src={minusIcon} alt="add icon" onClick={()=>setQuantity(prev=> prev === 1 ? 1 : prev - 1 )} className='rounded-[50%] cursor-pointer border-2 border-white h-6 w-6 p-1' />
+                    <img src={minusIcon} alt="add icon" onClick={()=>handleDecrease(index, items)} className='rounded-[50%] cursor-pointer border-2 border-white h-6 w-6 p-1' />
                     <small className='font-semibold text-white text-[1.3rem]'>{quantity}</small>
-                    <img src={addIcon} alt="minus icon" onClick={()=>setQuantity(prev=> prev + 1 )} className='rounded-[50%] cursor-pointer h-6 w-6 border-2 border-white p-1' />
+                    <img src={addIcon} alt="minus icon" onClick={()=>handleIncrease(index, items)} className='rounded-[50%] cursor-pointer h-6 w-6 border-2 border-white p-1' />
                   </div>
                 )}
               </div>
             </div>
-            <div key={`info-${index}`}>
+            <div key={`info-${items.id}`}>
               <small className='text-[1rem]'>{items.category}</small>
               <h5 className='text-[1.4rem] font-semibold'>{items.name}</h5>
               <p className='text-[1.1rem] text-red font-semibold '>${items.price}</p>
