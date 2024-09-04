@@ -43,7 +43,7 @@ function Cart() {
                            
                             <div className= 'pb-1 flex flex-row justify-between items-center'>
                             <div className='w-[11rem]'>
-                                <h4 className='truncate max-w-[12rem] mb-2 font-bold text-[1.1rem]'>{item.name}</h4>
+                                <h4 className='truncate max-w-[12remr] mb-2 font-bold text-[1.1rem]'>{item.name}</h4>
                                 <small className='text-[1rem]'><span className='text-red font-semibold'>{item.quantity}x</span>&nbsp;&nbsp; <span> @ ${(item.price).toFixed(2)}</span>  &nbsp;&nbsp; <span> ${(item.price * item.quantity).toFixed(2)}</span></small>
                             </div>
                             <div className='w-[2rem] flex justify-end'>       
