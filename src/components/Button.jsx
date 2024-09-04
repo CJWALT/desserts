@@ -1,14 +1,14 @@
 import React from 'react'
 
-function Button({children, onClick}) {
+function Button({children, onClick, className}) {
     
 
   return (
-    <div>
-      <button onClick={onClick} className='flex flex-row items-center px-8 font-semibold rounded-[1.8rem] border-rose-300 border-2 bg-white justify-center py-3 gap-[.5rem] bg-white'>
+    
+      <button onClick={onClick} className={`${className} flex flex-row items-center px-8 font-semibold rounded-[1.8rem] justify-center py-3 gap-[.5rem]`}>
         {children}
         </button>
-    </div>
+    
   )
 }
 

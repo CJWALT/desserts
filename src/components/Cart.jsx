@@ -1,13 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import emptyCart from '../assets/img/illustration-empty-cart.svg'
 import { useDispatch, useSelector } from 'react-redux'
 
 import deleteItem from '../assets/img/icon-remove-item.svg'
+import carbonDelivery from '../assets/img/icon-carbon-neutral.svg'
 import { removeItem } from '../redux/cartReducer'
+import Button from './Button'
+import CheckOutPage from './CheckOutPage'
 
 function Cart() {
 
     const dispatch = useDispatch();
+
+    const [checkOutModal, setCheckOutModal] = useState(false)
 
     const products = useSelector(state => state.cart.products)
     
@@ -18,27 +23,32 @@ function Cart() {
         return total.toFixed(2)
     }
 
+    const handleCheckOutModal = ()=>{ 
+        setCheckOutModal(!checkOutModal)
+    }
+
 
   return (
     
-      <div className='rounded-lg p-8 bg-rose-50'> 
-       <h5 className='mb-4 text-[1rem] border-2 border-red-400 font-bold text-red'>Your Cart ({products.length})</h5> 
-      {
-
-        products && products.length > 0  ?  
+      <div className='rounded-lg py-8 px-4 bg-white'> 
+       <h5 className='mb-4 text-[1.3rem] font-bold text-red'>Your Cart ({products.length})</h5> 
+   
+    <div className='flex flex-col gap-4'>
+    {
+    products && products.length > 0  ?  
             products?.map((item, index) => (
-                    <div key={index} className=''>
+                    <div className=''  key={index} >
                         
-                         <div className='w-full flex gap-4 flex-col border-2 border-red'>
+                         <div className='w-full flex gap-4 flex-col border-b-2 border-b-bg-rose-300'>
                            
-                            <div className= 'border-2 border-red-400 flex flex-row justify-between items-center'>
-                             <div>
-                        <h4>{item.name}</h4>
-                        <small>{item.quantity} x @{item.price} ${item.price * item.quantity}</small>
-                    </div>
-                        <div>       
-                            <img src={deleteItem} alt='delete item icon' onClick={()=> dispatch(removeItem(item.id))}/>
-                        </div>
+                            <div className= 'pb-1 flex flex-row justify-between items-center'>
+                            <div className='w-[11rem]'>
+                                <h4 className='mb-2 font-bold text-[1.1rem]'>{item.name}</h4>
+                                <small className='text-[1rem]'><span className='text-red font-semibold'>{item.quantity}x</span>&nbsp;&nbsp; <span> @ ${(item.price).toFixed(2)}</span>  &nbsp;&nbsp; <span> ${(item.price * item.quantity).toFixed(2)}</span></small>
+                            </div>
+                            <div className='w-[2rem] flex justify-end'>       
+                                <img src={deleteItem} alt='delete item icon' className='cursor-pointer rounded-[50%] border-bg-rose-200 w-4 h-4 border-2' onClick={()=> dispatch(removeItem(item.id))}/>
+                            </div>
                         </div>
                        
                         </div>
@@ -47,7 +57,8 @@ function Cart() {
                    
                         </div>
                         
-            ))  : <div>
+                        
+            ))   : <div>
         
           <div className='flex justify-center items-center flex-col p-4 gap-4'>
             <img src={emptyCart} alt='empty cart illustration' />
@@ -57,11 +68,33 @@ function Cart() {
         
       }
 
-<p>Order Total: {totalPrice()} </p>
-      
-       
+    </div>
+
+    { products.length > 0 && 
+    <>
+        <p className='w-full py-6 items-center flex justify-between font-semibold'>Order Total: <span className='font-bold text-[1.3rem]'>${totalPrice()}</span> </p>
+
+        <div className='flex flex-row mb-6 justify-between py-4 bg-rose-50 px-4 rounded-md items-center'>
+            <img src={carbonDelivery} alt="carbon delivery" />
+
+            <p className=' font-semibold text-[.7rem]'>This is a <span className='font-bold'>
+                carbon-neutral</span> delivery</p>
+                
+        </div>
+        <Button
+        onClick={()=>setCheckOutModal(!checkOutModal)}
+         className='w-[100%] text-white bg-red border-0'>
+        Confirm Order
+        </Button>
+    </>
+
         
-      </div>
+      
+}
+
+        {checkOutModal && <CheckOutPage products={products}
+        checkOutModal={handleCheckOutModal}/>}
+   </div>
     
   )
 }

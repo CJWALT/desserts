@@ -92,7 +92,8 @@ function ProductList({ data }) {
               />
               <div className='absolute flex justify-center -bottom-6'>
                 {!inCart ? (
-                  <Button onClick={() => handleAddToCart(index, items)} addToCartTrue={true}>
+                  <Button onClick={() => handleAddToCart(index, items)} addToCartTrue={true}
+                  className='border-rose-300 border-2 bg-white'>
                     <img src={addCartIcon} alt='add to cart' /> Add to Cart
                   </Button>
                 ) : (
