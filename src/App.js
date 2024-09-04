@@ -1,10 +1,14 @@
+import ProductPage from "./page/ProductPage";
 
 
 function App() {
   return (
-    <div className="App">
-      <p>app</p>
-    </div>
+    <>
+    <div className="relative bg-rose-100">
+    <ProductPage/>
+
+</div>
+    </>
   );
 }
 
